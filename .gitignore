@@ -1,0 +1,65 @@
+# ============================================================
+# Unreal Engine 5.8
+# Windows + JetBrains Rider
+# ============================================================
+
+# Unreal generated directories
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# Local build / staging output
+Build/Receipts/
+Build/Windows/FileOpenOrder/
+Build/Windows/PipelineCaches/
+StagedBuilds/
+
+# Unreal generated IDE/project files
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+*.code-workspace
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# RiderLink installed locally in the project
+Plugins/Developer/RiderLink/
+
+# Visual Studio / MSBuild leftovers
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Crash / debug files
+*.log
+*.tmp
+*.temp
+*.dmp
+*.pdb
+
+# Packaged builds / archives
+*.pak
+*.ucas
+*.utoc
+
+# Unreal autosaves / backups
+Autosaves/
+Backup/
+
+# Optional: local editor cache files
+*.uatbuildrecord
