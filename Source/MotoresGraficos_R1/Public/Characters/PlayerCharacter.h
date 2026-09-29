@@ -15,10 +15,14 @@ class MOTORESGRAFICOS_R1_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+public:
+	APlayerCharacter();
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void Tick(float DeltaTime) override; 
+	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
@@ -30,4 +34,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* LookAction;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Animation")
+	float Speed;
 };

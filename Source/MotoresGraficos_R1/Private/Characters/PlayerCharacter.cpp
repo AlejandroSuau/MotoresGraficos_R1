@@ -4,6 +4,18 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 
+APlayerCharacter::APlayerCharacter()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
+
+void APlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	Speed = GetVelocity().Size2D();
+}
+
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
