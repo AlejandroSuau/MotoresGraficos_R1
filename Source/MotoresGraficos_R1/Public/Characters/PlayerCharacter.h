@@ -26,6 +26,9 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
+	void StartShooting();
+	void StopShooting();
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputMappingContext* PlayerMappingContext;
 
@@ -34,6 +37,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* JumpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UInputAction* ShootAction;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Animation")
+	bool bIsShooting = false;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	float Speed;

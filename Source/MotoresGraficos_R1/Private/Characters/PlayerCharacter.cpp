@@ -33,20 +33,46 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(
-			MoveAction,
-			ETriggerEvent::Triggered,
-			this,
-			&APlayerCharacter::Move);
+	auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (!EnhancedInputComponent) { return; }
 
-		EnhancedInputComponent->BindAction(
-			LookAction,
-			ETriggerEvent::Triggered,
-			this,
-			&APlayerCharacter::Look);
-	}
+	EnhancedInputComponent->BindAction(
+		MoveAction,
+		ETriggerEvent::Triggered,
+		this,
+		&APlayerCharacter::Move);
+
+	EnhancedInputComponent->BindAction(
+		LookAction,
+		ETriggerEvent::Triggered,
+		this,
+		&APlayerCharacter::Look);
+
+	EnhancedInputComponent->BindAction(
+		JumpAction,
+		ETriggerEvent::Started,
+		this,
+		&APlayerCharacter::Jump);
+
+	EnhancedInputComponent->BindAction(
+		JumpAction,
+		ETriggerEvent::Completed,
+		this,
+		&APlayerCharacter::StopJumping);
+
+	EnhancedInputComponent->BindAction(
+		ShootAction,
+		ETriggerEvent::Started,
+		this,
+		&APlayerCharacter::StartShooting
+	);
+
+	EnhancedInputComponent->BindAction(
+		ShootAction,
+		ETriggerEvent::Completed,
+		this,
+		&APlayerCharacter::StopShooting
+	);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -68,4 +94,14 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 	AddControllerYawInput(LookAxisVector.X);
 	AddControllerPitchInput(LookAxisVector.Y);
+}
+
+void APlayerCharacter::StartShooting()
+{
+	bIsShooting = true;
+}
+
+void APlayerCharacter::StopShooting()
+{
+	bIsShooting = false;
 }
