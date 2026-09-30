@@ -23,31 +23,38 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Tick(float DeltaTime) override; 
-	
+
+	// Handles character movement relative to the camera direction.
 	void Move(const FInputActionValue& Value);
+
+	// Handles camera rotation using mouse input.
 	void Look(const FInputActionValue& Value);
 
+	// Starts and stops the shooting animation montage.
 	void StartShooting();
 	void StopShooting();
 
+	// Input mapping context used by the player.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputMappingContext* PlayerMappingContext;
+	UInputMappingContext* PlayerMappingContext { nullptr };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* MoveAction;
+	UInputAction* MoveAction { nullptr };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* LookAction;
+	UInputAction* LookAction { nullptr };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* JumpAction;
+	UInputAction* JumpAction { nullptr };
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	UInputAction* ShootAction;
+	UInputAction* ShootAction { nullptr };
 
+	// Animation montage played while shooting.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
-	UAnimMontage* ShootMontage;
+	UAnimMontage* ShootMontage { nullptr };
 
+	// Horizontal movement speed used by the Animation Blueprint.
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
-	float Speed;
+	float Speed { 0.f };
 };

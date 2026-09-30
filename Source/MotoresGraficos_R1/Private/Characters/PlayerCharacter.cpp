@@ -14,6 +14,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Store horizontal speed so it can be used by the Animation Blueprint.
 	Speed = GetVelocity().Size2D();
 }
 
@@ -21,6 +22,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Add the player's input mapping context to the Enhanced Input subsystem.
 	if (auto* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -37,18 +39,21 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (!EnhancedInputComponent) { return; }
 
+	// Movement
 	EnhancedInputComponent->BindAction(
 		MoveAction,
 		ETriggerEvent::Triggered,
 		this,
 		&APlayerCharacter::Move);
 
+	// Camera
 	EnhancedInputComponent->BindAction(
 		LookAction,
 		ETriggerEvent::Triggered,
 		this,
 		&APlayerCharacter::Look);
 
+	// Jump
 	EnhancedInputComponent->BindAction(
 		JumpAction,
 		ETriggerEvent::Started,
@@ -61,6 +66,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		this,
 		&APlayerCharacter::StopJumping);
 
+	// Shooting
 	EnhancedInputComponent->BindAction(
 		ShootAction,
 		ETriggerEvent::Triggered,
@@ -80,6 +86,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 {
 	if (!Controller) { return; }
 
+	// Only use the camera's Yaw so movement remains parallel to the ground.
 	const FRotator ControlRotation = Controller->GetControlRotation();
 	const FRotator YawRotation(0.0f, ControlRotation.Yaw, 0.0f);
 	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -99,19 +106,19 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::StartShooting()
 {
-	if (ShootMontage && GetMesh() && GetMesh()->GetAnimInstance())
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (ShootMontage
+		&& AnimInstance
+		&& !AnimInstance->Montage_IsPlaying(ShootMontage))
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if (!AnimInstance->Montage_IsPlaying(ShootMontage))
-		{
-			AnimInstance->Montage_Play(ShootMontage);
-		}
+		AnimInstance->Montage_Play(ShootMontage);
 	}
 }
 
 void APlayerCharacter::StopShooting()
 {
-	if (ShootMontage && GetMesh() && GetMesh()->GetAnimInstance())
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (ShootMontage && AnimInstance)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Stop(0.1f, ShootMontage);
 	}

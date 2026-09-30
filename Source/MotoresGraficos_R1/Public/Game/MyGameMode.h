@@ -7,7 +7,8 @@
 #include "MyGameMode.generated.h"
 
 /**
- * 
+ * Defines the game rules and the default classes used by the level.
+ * The default player character is configured in BP_MyGameMode.
  */
 UCLASS()
 class MOTORESGRAFICOS_R1_API AMyGameMode : public AGameModeBase
