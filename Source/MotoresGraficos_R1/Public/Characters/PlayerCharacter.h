@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class UAnimMontage;
 
 UCLASS()
 class MOTORESGRAFICOS_R1_API APlayerCharacter : public ACharacter
@@ -44,8 +45,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* ShootAction;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Animation")
-	bool bIsShooting = false;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* ShootMontage;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	float Speed;

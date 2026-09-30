@@ -3,6 +3,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Animation/AnimInstance.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -62,7 +63,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	EnhancedInputComponent->BindAction(
 		ShootAction,
-		ETriggerEvent::Started,
+		ETriggerEvent::Triggered,
 		this,
 		&APlayerCharacter::StartShooting
 	);
@@ -98,10 +99,20 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::StartShooting()
 {
-	bIsShooting = true;
+	if (ShootMontage && GetMesh() && GetMesh()->GetAnimInstance())
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (!AnimInstance->Montage_IsPlaying(ShootMontage))
+		{
+			AnimInstance->Montage_Play(ShootMontage);
+		}
+	}
 }
 
 void APlayerCharacter::StopShooting()
 {
-	bIsShooting = false;
+	if (ShootMontage && GetMesh() && GetMesh()->GetAnimInstance())
+	{
+		GetMesh()->GetAnimInstance()->Montage_Stop(0.1f, ShootMontage);
+	}
 }
