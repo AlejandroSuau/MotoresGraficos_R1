@@ -4,6 +4,10 @@ Proyecto desarrollado en Unreal Engine 5.8 utilizando C++ y Blueprints.
 
 El objetivo de la práctica es crear un personaje jugable básico, combinando lógica implementada en C++ con configuración visual y de animaciones mediante Blueprints.
 
+## Demo
+
+[![Watch the gameplay demo](https://img.youtube.com/vi/ftC4xGEnZGc/maxresdefault.jpg)](https://www.youtube.com/watch?v=ftC4xGEnZGc)
+
 ## Ejercicio 1 - GameMode y personaje jugable
 
 Se ha creado un `GameMode` propio en C++ mediante la clase:
