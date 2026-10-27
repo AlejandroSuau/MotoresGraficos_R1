@@ -11,6 +11,7 @@ class UInputAction;
 struct FInputActionValue;
 class UAnimMontage;
 class ADoorActor;
+class UUserWidget;
 
 UCLASS()
 class MOTORESGRAFICOS_R1_API APlayerCharacter : public ACharacter
@@ -64,6 +65,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	float Speed { 0.f };
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> CrosshairWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* CrosshairWidget = nullptr;
+	
 	UPROPERTY()
 	ADoorActor* CurrentDoor = nullptr;
 	

@@ -14,7 +14,8 @@ public class MotoresGraficos_R1 : ModuleRules
 			"CoreUObject", 
 			"Engine", 
 			"InputCore", 
-			"EnhancedInput"
+			"EnhancedInput",
+			"UMG"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

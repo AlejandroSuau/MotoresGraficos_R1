@@ -39,7 +39,7 @@ protected:
 
 private:
 	bool bMovingToPointB = true;
-	bool bIsWaiting = false;
+	bool bIsWaiting = true;
 
 	float CurrentSpeed = 0.0f;
 	float WaitTimer = 0.0f;

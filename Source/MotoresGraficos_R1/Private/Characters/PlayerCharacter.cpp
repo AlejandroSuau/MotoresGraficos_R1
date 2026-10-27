@@ -3,8 +3,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "DrawDebugHelpers.h"
 #include "Animation/AnimInstance.h"
 #include "World/DoorActor.h"
+#include "GameFramework/PlayerController.h"
+#include "Components/StaticMeshComponent.h"
+#include "Blueprint/UserWidget.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -29,6 +33,15 @@ void APlayerCharacter::BeginPlay()
 		if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(PlayerMappingContext, 0);
+		}
+	}
+
+	if (CrosshairWidgetClass)
+	{
+		CrosshairWidget = CreateWidget<UUserWidget>(GetWorld(), CrosshairWidgetClass);
+		if (CrosshairWidget)
+		{
+			CrosshairWidget->AddToViewport();
 		}
 	}
 }
@@ -111,12 +124,100 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::StartShooting()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	auto* AnimInstance = GetMesh()->GetAnimInstance();
 	if (ShootMontage
 		&& AnimInstance
 		&& !AnimInstance->Montage_IsPlaying(ShootMontage))
 	{
 		AnimInstance->Montage_Play(ShootMontage);
+	}
+
+	auto* PlayerController = Cast<APlayerController>(Controller);
+	if (!PlayerController) { return; }
+
+	// First trace: find what the player is aiming at from the camera
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	// Rotate the character towards the camera direction
+	FRotator NewCharacterRotation = GetActorRotation();
+	NewCharacterRotation.Yaw = CameraRotation.Yaw;
+
+	SetActorRotation(NewCharacterRotation);
+
+	const float TraceDistance = 5000.0f;
+	const FVector CameraTraceEnd = CameraLocation + CameraRotation.Vector() * TraceDistance;
+
+	FHitResult CameraHit;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(
+		CameraHit,
+		CameraLocation,
+		CameraTraceEnd,
+		ECC_Visibility,
+		QueryParams);
+
+	const FVector AimPoint = CameraHit.bBlockingHit ? CameraHit.ImpactPoint : CameraTraceEnd;
+
+	// Find the rifle component.
+	auto WeaponComponents = GetComponentsByTag(
+			UStaticMeshComponent::StaticClass(),
+			FName("Weapon"));
+
+	if (WeaponComponents.IsEmpty()) { return; }
+
+	auto* WeaponMesh = Cast<UStaticMeshComponent>(WeaponComponents[0]);
+	if (!WeaponMesh) { return; }
+
+	const FVector MuzzleLocation = WeaponMesh->GetSocketLocation(FName("MuzzleSocket"));
+
+	// Second trace: the actual shot starts at the rifle muzzle
+	// and travels towards the point selected by the camera.
+	const FVector ShotDirection = (AimPoint - MuzzleLocation).GetSafeNormal();
+	const FVector ShotEnd = MuzzleLocation + ShotDirection * TraceDistance;
+
+	FHitResult ShotHit;
+
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(
+		ShotHit,
+		MuzzleLocation,
+		ShotEnd,
+		ECC_Visibility,
+		QueryParams);
+
+	DrawDebugLine(
+		GetWorld(),
+		MuzzleLocation,
+		bHit ? ShotHit.ImpactPoint : ShotEnd,
+		FColor::Red,
+		false,
+		1.0f,
+		0,
+		1.0f);
+
+	if (bHit)
+	{
+		DrawDebugSphere(
+			GetWorld(),
+			ShotHit.ImpactPoint,
+			10.0f,
+			12,
+			FColor::Green,
+			false,
+			1.0f);
+
+		if (auto* HitActor = ShotHit.GetActor())
+		{
+			UE_LOG(
+				LogTemp,
+				Warning,
+				TEXT("Hit: %s"),
+				*HitActor->GetName());
+		}
 	}
 }
 
