@@ -4,6 +4,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Animation/AnimInstance.h"
+#include "World/DoorActor.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -71,15 +72,19 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		ShootAction,
 		ETriggerEvent::Triggered,
 		this,
-		&APlayerCharacter::StartShooting
-	);
+		&APlayerCharacter::StartShooting);
 
 	EnhancedInputComponent->BindAction(
 		ShootAction,
 		ETriggerEvent::Completed,
 		this,
-		&APlayerCharacter::StopShooting
-	);
+		&APlayerCharacter::StopShooting);
+
+	EnhancedInputComponent->BindAction(
+		InteractAction,
+		ETriggerEvent::Started,
+		this,
+		&APlayerCharacter::Interact);
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -121,5 +126,18 @@ void APlayerCharacter::StopShooting()
 	if (ShootMontage && AnimInstance)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Stop(0.1f, ShootMontage);
+	}
+}
+
+void APlayerCharacter::SetCurrentDoor(ADoorActor* Door)
+{
+	CurrentDoor = Door;
+}
+
+void APlayerCharacter::Interact()
+{
+	if (CurrentDoor)
+	{
+		CurrentDoor->Interact();
 	}
 }

@@ -10,6 +10,7 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class UAnimMontage;
+class ADoorActor;
 
 UCLASS()
 class MOTORESGRAFICOS_R1_API APlayerCharacter : public ACharacter
@@ -18,6 +19,8 @@ class MOTORESGRAFICOS_R1_API APlayerCharacter : public ACharacter
 
 public:
 	APlayerCharacter();
+
+	void SetCurrentDoor(ADoorActor* Door);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -50,6 +53,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	UInputAction* ShootAction { nullptr };
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	UInputAction* InteractAction { nullptr };
+	
 	// Animation montage played while shooting.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* ShootMontage { nullptr };
@@ -57,4 +63,9 @@ protected:
 	// Horizontal movement speed used by the Animation Blueprint.
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	float Speed { 0.f };
+
+	UPROPERTY()
+	ADoorActor* CurrentDoor = nullptr;
+	
+	void Interact();
 };
