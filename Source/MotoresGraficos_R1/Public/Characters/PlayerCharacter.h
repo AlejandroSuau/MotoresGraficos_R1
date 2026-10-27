@@ -65,6 +65,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Animation")
 	float Speed { 0.f };
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	float WeaponDamage = 25.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon")
+	float FireRate = 0.15f;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> CrosshairWidgetClass;
 
@@ -73,6 +79,10 @@ protected:
 	
 	UPROPERTY()
 	ADoorActor* CurrentDoor = nullptr;
-	
+
+	bool bCanShoot = true;
+	FTimerHandle FireRateTimer;
+
 	void Interact();
+	void ResetFireRate();
 };

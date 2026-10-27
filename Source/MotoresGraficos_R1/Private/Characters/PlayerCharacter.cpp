@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Components/StaticMeshComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Enemies/EnemyActor.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -124,6 +125,17 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::StartShooting()
 {
+	if (!bCanShoot) { return; }
+
+	bCanShoot = false;
+
+	GetWorldTimerManager().SetTimer(
+		FireRateTimer,
+		this,
+		&APlayerCharacter::ResetFireRate,
+		FireRate,
+		false);
+	
 	auto* AnimInstance = GetMesh()->GetAnimInstance();
 	if (ShootMontage
 		&& AnimInstance
@@ -218,7 +230,17 @@ void APlayerCharacter::StartShooting()
 				TEXT("Hit: %s"),
 				*HitActor->GetName());
 		}
+
+		if (auto* Enemy = Cast<AEnemyActor>(ShotHit.GetActor()))
+		{
+			Enemy->ReceiveDamage(WeaponDamage);
+		}
 	}
+}
+
+void APlayerCharacter::ResetFireRate()
+{
+	bCanShoot = true;
 }
 
 void APlayerCharacter::StopShooting()
