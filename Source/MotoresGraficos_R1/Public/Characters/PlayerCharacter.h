@@ -22,7 +22,9 @@ public:
 	APlayerCharacter();
 
 	void SetCurrentDoor(ADoorActor* Door);
-	
+	bool CanUsePortal() const;
+	void StartPortalCooldown();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -74,6 +76,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> CrosshairWidgetClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Portal")
+	float PortalCooldown = 0.5f;
+	
 	UPROPERTY()
 	UUserWidget* CrosshairWidget = nullptr;
 	
@@ -82,6 +87,9 @@ protected:
 
 	bool bCanShoot = true;
 	FTimerHandle FireRateTimer;
+	
+	bool bCanUsePortal = true;
+	FTimerHandle PortalCooldownTimer;
 
 	void Interact();
 	void ResetFireRate();

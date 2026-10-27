@@ -264,3 +264,19 @@ void APlayerCharacter::Interact()
 		CurrentDoor->Interact();
 	}
 }
+
+void APlayerCharacter::StartPortalCooldown()
+{
+	bCanUsePortal = false;
+
+	GetWorldTimerManager().SetTimer(
+		PortalCooldownTimer,
+		[this]() { bCanUsePortal = true; },
+		PortalCooldown,
+		false);
+}
+
+bool APlayerCharacter::CanUsePortal() const
+{
+	return bCanUsePortal;
+}
