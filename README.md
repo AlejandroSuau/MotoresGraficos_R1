@@ -1,10 +1,10 @@
-﻿# MotoresGraficos_R1
+﻿# MotoresGraficos R1-R2
 
 Proyecto desarrollado en Unreal Engine 5.8 utilizando C++ y Blueprints.
 
 El objetivo de la práctica es crear un personaje jugable básico, combinando lógica implementada en C++ con configuración visual y de animaciones mediante Blueprints.
 
-## Ejercicio 1 - GameMode y personaje jugable
+## GameMode y personaje jugable
 
 Se ha creado un `GameMode` propio en C++ mediante la clase:
 
@@ -24,7 +24,7 @@ El personaje está basado en la clase C++:
 
 También se ha creado un mapa básico utilizado como escenario principal del proyecto.
 
-## Ejercicio 2 - Movimiento y cámara
+## Movimiento y cámara
 
 El movimiento del personaje está implementado en C++ utilizando el sistema `Enhanced Input`.
 
@@ -48,7 +48,7 @@ La cámara se controla mediante el movimiento del ratón y utiliza:
 
 La lógica de movimiento y cámara se encuentra en `PlayerCharacter.cpp`.
 
-## Ejercicio 3 - Animaciones Idle y Run
+## Animaciones Idle y Run
 
 Se ha creado un Animation Blueprint:
 
@@ -69,7 +69,7 @@ La máquina de estados del Animation Blueprint utiliza esta variable para cambia
 
 De esta forma, el personaje reproduce la animación Idle cuando está parado y la animación Run cuando se encuentra en movimiento.
 
-## Ejercicio 4 - Salto y disparo
+## Salto y disparo
 
 ### Salto
 
@@ -106,6 +106,96 @@ y se utiliza un nodo `Layered Blend Per Bone` para permitir que la animación de
 De esta forma, el personaje puede correr y disparar simultáneamente.
 
 Mantener pulsado el botón izquierdo del ratón mantiene la animación de disparo activa, y al soltarlo el Montage se detiene.
+
+## Sistema de disparo mediante Line Trace
+
+Primero se realiza un trace desde la cámara para determinar el punto al que está apuntando el jugador. 
+Posteriormente se realiza el disparo real desde el socket `MuzzleSocket` situado en el cañón del rifle hacia el punto determinado anteriormente.
+
+El personaje también rota hacia la dirección de apuntado al disparar.
+
+Se han añadido las siguientes propiedades configurables:
+
+- WeaponDamage: daño realizado por cada impacto.
+- FireRate: intervalo entre disparos.
+
+El Fire Rate utiliza un Timer para impedir que mantener pulsado el botón de disparo aplique daño una vez por frame.
+
+También se ha añadido una cruceta mediante: WBP_Crosshair que se muestra permanentemente en el centro de la pantalla.
+
+## Plataformas móviles
+
+Se ha creado la clase C++ `AMovingPlatform` y su correspondiente Blueprint reutilizable.
+
+Las plataformas disponen de dos puntos configurables:
+
+- PointA
+- PointB
+
+Cada plataforma se desplaza continuamente entre ambos puntos.
+
+El movimiento incorpora:
+
+- Aceleración progresiva al comenzar.
+- Velocidad máxima configurable.
+- Frenado progresivo al aproximarse al destino.
+
+Pausa configurable en ambos extremos.
+
+En el escenario se utilizan:
+
+- 2 plataformas con movimiento vertical.
+- 1 plataforma con movimiento horizontal.
+
+## Puertas interactuables
+
+Se ha creado la clase `ADoorActor`.
+
+El jugador puede interactuar con una puerta cuando se encuentra dentro de su zona de interacción.
+
+Se ha creado la acción `IA_Interact` asociada a la tecla `E`.
+
+La puerta detecta al jugador mediante un BoxComponent.
+
+Cuando el jugador está suficientemente cerca, la puerta se registra como la puerta actualmente interactuable.
+
+Al pulsar E:
+
+- Si está cerrada, se abre;
+- Si está abierta, se cierra.
+
+La rotación de la puerta se interpola progresivamente para conseguir un movimiento suave.
+
+## Enemigos y sistema de daño
+
+Se ha creado la clase `AEnemyActor`.
+
+Los enemigos son actores estáticos representados mediante un Static Mesh.
+
+Cada enemigo dispone de una cantidad configurable de vida `Health`. Al llegar a cero mediante los impactos del player, se destruye.
+
+## Portal
+
+Se ha creado la clase `APortalActor`.
+
+Los portales funcionan como parejas enlazadas, Cada instancia dispone de una referencia que indica cuál es su portal de destino.
+Permiten realizar un teletransporte bidireccional.
+
+El jugador es detectado mediante un BoxComponent.
+
+Al atravesar el portal:
+
+Se teletransporta hasta el portal enlazado.
+
+Aparece delante del portal de salida.
+
+El personaje rota siguiendo la dirección de salida.
+
+Se aplica un pequeño cooldown para impedir que el jugador sea teletransportado inmediatamente de vuelta al portal anterior.
+
+Visualmente, cada portal está construido utilizando dos Torus (creados con blender) y una con un material animado (una imagen también creada con IA).
+
+El material utiliza desplazamiento de coordenadas mediante un Panner, generando un efecto de energía en movimiento.
 
 ## Arma
 
