@@ -170,7 +170,7 @@ La rotación de la puerta se interpola progresivamente para conseguir un movimie
 
 Se ha creado la clase `AEnemyActor`.
 
-Los enemigos son actores estáticos representados mediante un Static Mesh.
+Los enemigos son actores estáticos representados mediante un Static Mesh. Creados personalmente con Blender y cierto soporte de la IA.
 
 Cada enemigo dispone de una cantidad configurable de vida `Health`. Al llegar a cero mediante los impactos del player, se destruye.
 
@@ -214,6 +214,9 @@ El mesh del arma proviene gratuitamente del FAB de Epic:
 
 Mientras que el Mesh del personaje puede encontrarse en Mixamo:
 (`https://www.mixamo.com/`)
+
+Los assets del mapa (son de pago, aunque yo dispongo de ellos):
+https://www.fab.com/listings/60cf60a7-3646-40ed-bdc9-0159eefb9db0
 
 ## Estructura general
 
