@@ -2,7 +2,9 @@
 
 Proyecto desarrollado en Unreal Engine 5.8 utilizando C++ y Blueprints.
 
-El objetivo de la práctica es crear un personaje jugable básico, combinando lógica implementada en C++ con configuración visual y de animaciones mediante Blueprints.
+## Demo
+
+[![Watch the gameplay demo](https://img.youtube.com/vi/TZ216g5uHPk/maxresdefault.jpg)](https://www.youtube.com/watch?v=TZ216g5uHPk)
 
 ## GameMode y personaje jugable
 
@@ -217,24 +219,6 @@ Mientras que el Mesh del personaje puede encontrarse en Mixamo:
 
 Los assets del mapa (son de pago, aunque yo dispongo de ellos):
 https://www.fab.com/listings/60cf60a7-3646-40ed-bdc9-0159eefb9db0
-
-## Estructura general
-
-La lógica principal del personaje se encuentra implementada en C++:
-
-- Movimiento
-- Cámara
-- Salto
-- Disparo
-- Cálculo de velocidad
-
-Los Blueprints se utilizan principalmente para:
-
-- Configurar assets
-- Asignar Inputs
-- Configurar el personaje
-- Gestionar la máquina de estados de animación
-- Configurar el Animation Montage y el blend de animaciones
 
 ## Controles
 
