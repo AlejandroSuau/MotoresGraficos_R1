@@ -13,13 +13,6 @@ AEnemyActor::AEnemyActor()
 void AEnemyActor::ReceiveDamage(float DamageAmount)
 {
 	Health -= DamageAmount;
-
-	UE_LOG(
-		LogTemp,
-		Warning,
-		TEXT("Enemy health: %f"),
-		Health);
-
 	if (Health <= 0.0f)
 	{
 		Destroy();

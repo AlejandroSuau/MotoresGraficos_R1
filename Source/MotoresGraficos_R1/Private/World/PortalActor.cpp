@@ -11,9 +11,12 @@ APortalActor::APortalActor()
 
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	SetRootComponent(SceneRoot);
+	
+	RingLight = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RingLight"));
+	RingLight->SetupAttachment(SceneRoot);
 
-	PortalMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PortalMesh"));
-	PortalMesh->SetupAttachment(SceneRoot);
+	RingNebulous = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RingNebulous"));
+	RingNebulous->SetupAttachment(SceneRoot);
 
 	TeleportTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TeleportTrigger"));
 	TeleportTrigger->SetupAttachment(SceneRoot);
@@ -40,20 +43,15 @@ void APortalActor::OnPortalOverlap(
 
 		Player->StartPortalCooldown();
 		
-		if (LinkedPortal)
-		{
-			const float CapsuleHalfHeight = Player->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-			const FVector ExitLocation = (
-				LinkedPortal->GetActorLocation()
-				+ LinkedPortal->GetActorForwardVector() * 150.0f
-				+ FVector(0.0f, 0.0f, CapsuleHalfHeight));
-			const FRotator ExitRotation = LinkedPortal->GetActorForwardVector().Rotation();
-			Player->SetActorLocationAndRotation(ExitLocation, ExitRotation);
+		const FVector ExitLocation = (
+			LinkedPortal->GetActorLocation()
+			+ LinkedPortal->GetActorForwardVector() * 100.0f);
+		const FRotator ExitRotation = LinkedPortal->GetActorForwardVector().Rotation();
+		Player->SetActorLocationAndRotation(ExitLocation, ExitRotation);
 
-			if (AController* PlayerController = Player->GetController())
-			{
-				PlayerController->SetControlRotation(ExitRotation);
-			}
+		if (AController* PlayerController = Player->GetController())
+		{
+			PlayerController->SetControlRotation(ExitRotation);
 		}
 	}
 }

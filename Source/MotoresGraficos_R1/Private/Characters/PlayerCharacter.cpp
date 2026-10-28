@@ -221,16 +221,7 @@ void APlayerCharacter::StartShooting()
 			FColor::Green,
 			false,
 			1.0f);
-
-		if (auto* HitActor = ShotHit.GetActor())
-		{
-			UE_LOG(
-				LogTemp,
-				Warning,
-				TEXT("Hit: %s"),
-				*HitActor->GetName());
-		}
-
+		
 		if (auto* Enemy = Cast<AEnemyActor>(ShotHit.GetActor()))
 		{
 			Enemy->ReceiveDamage(WeaponDamage);
@@ -248,7 +239,7 @@ void APlayerCharacter::StopShooting()
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (ShootMontage && AnimInstance)
 	{
-		GetMesh()->GetAnimInstance()->Montage_Stop(0.1f, ShootMontage);
+		AnimInstance->Montage_Stop(0.1f, ShootMontage);
 	}
 }
 
