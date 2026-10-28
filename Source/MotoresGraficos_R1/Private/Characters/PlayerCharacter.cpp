@@ -8,6 +8,7 @@
 #include "World/DoorActor.h"
 #include "GameFramework/PlayerController.h"
 #include "Components/StaticMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Enemies/EnemyActor.h"
 
@@ -22,6 +23,16 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	// Store horizontal speed so it can be used by the Animation Blueprint.
 	Speed = GetVelocity().Size2D();
+
+	if (bIsShooting && Controller)
+	{
+		const FRotator CurrentRotation = GetActorRotation();
+		const FRotator ControlRotation = Controller->GetControlRotation();
+		const FRotator TargetRotation(0.0f, ControlRotation.Yaw, 0.0f);
+		const FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 10.0f);
+
+		SetActorRotation(NewRotation);
+	}
 }
 
 void APlayerCharacter::BeginPlay()
@@ -127,6 +138,9 @@ void APlayerCharacter::StartShooting()
 {
 	if (!bCanShoot) { return; }
 
+	bIsShooting = true;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	
 	bCanShoot = false;
 
 	GetWorldTimerManager().SetTimer(
@@ -151,12 +165,6 @@ void APlayerCharacter::StartShooting()
 	FVector CameraLocation;
 	FRotator CameraRotation;
 	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
-
-	// Rotate the character towards the camera direction
-	FRotator NewCharacterRotation = GetActorRotation();
-	NewCharacterRotation.Yaw = CameraRotation.Yaw;
-
-	SetActorRotation(NewCharacterRotation);
 
 	const float TraceDistance = 5000.0f;
 	const FVector CameraTraceEnd = CameraLocation + CameraRotation.Vector() * TraceDistance;
@@ -236,6 +244,9 @@ void APlayerCharacter::ResetFireRate()
 
 void APlayerCharacter::StopShooting()
 {
+	bIsShooting = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (ShootMontage && AnimInstance)
 	{

@@ -85,6 +85,8 @@ protected:
 	UPROPERTY()
 	ADoorActor* CurrentDoor = nullptr;
 
+	bool bIsShooting = false;
+	
 	bool bCanShoot = true;
 	FTimerHandle FireRateTimer;
 	
